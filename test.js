@@ -1,5 +1,8 @@
-const store = {
-  header: 1,
+const state = {
+  self: 'self',
+
+  one: 1,
+  two: 2,
   numbers: {
     one: 1,
     two: 2,
@@ -13,15 +16,18 @@ const store = {
     2: 'two',
   },
 }
+const store = {
+  getFromRoot: (key) => state[key],
+}
 
-const describe = (name, fn) =>
-  fn((description, fn) => {
+const describe = (name, uselessfn) =>
+  uselessfn((description, fn) => {
     try {
       fn()
       console.log(`[GOOD] it ${description}`)
     } catch (err) {
       console.log(`[ BAD] it ${description}`)
-      console.log(err.message)
+      console.log(err.stack)
     }
   })
 
@@ -30,14 +36,28 @@ const expect = value => ({
     if (value !== otherval) {
       throw new Error(`Expected ${value} to be ${otherval}`)
     }
-  }
+  },
+  toThrow: _ => {
+    try {
+      value()
+    } catch (err) {
+      return
+    }
+    throw new Error(`Expected ${value} to throw`)
+  },
 })
 
 const simpleQuery = require('./dist/simplequery')
-describe('simplequery', it => {
+// describe('simplequery - tokenize', it => {
+//   it('should return the right tokens', _ => {
+//     expect(simpleQuery('header')(store)).toHaveTokens
+//   })
+// })
+
+describe('simplequery - get from store', it => {
   it('should find single depth value', _ => {
-    expect(simpleQuery('header')(store)).toBe(1)
-    expect(simpleQuery('numbers')(store)).toBe(store.numbers)
+    expect(simpleQuery('one')(store)).toBe(1)
+    expect(simpleQuery('numbers')(store)).toBe(state.numbers)
   })
 
   it('should find double depth key', _ => {
@@ -55,5 +75,29 @@ describe('simplequery', it => {
 
   it('should support a numeric key', _ => {
     expect(simpleQuery('literalByNum.1')(store)).toBe('one')
+  })
+
+  it('should support derived key access on the root', _ => {
+    expect(simpleQuery('[literalByNum.1]')(store)).toBe(1)
+  })
+
+  it('should support derived key access on the root xtreme', _ => {
+    expect(simpleQuery('[[[[[self]]]]]')(store)).toBe('self')
+  })
+
+  const badQueries = [
+    '[]',
+    '',
+    '.test',
+    '[.test]',
+    'test[',
+    ']',
+    '[good]bad',
+  ]
+
+  badQueries.forEach(query => {
+    it(`should throw with query '${query}'`, _ => {
+      expect(() => simpleQuery(query)(store)).toThrow()
+    })
   })
 })
