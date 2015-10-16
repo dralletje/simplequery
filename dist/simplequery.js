@@ -26,7 +26,7 @@ var simpleQuery = function simpleQuery(query) {
     var _ref$getProp = _ref.getProp;
     var getProp = _ref$getProp === undefined ? defGetFn : _ref$getProp;
 
-    var _executeQuery = (0, _executor2['default'])({ tokens: tokens }, { getProp: getProp, getFromRoot: getFromRoot });
+    var _executeQuery = (0, _executor2['default'])(tokens, { getProp: getProp, getFromRoot: getFromRoot });
 
     var cursor = _executeQuery.cursor;
     var newTokens = _executeQuery.tokens;

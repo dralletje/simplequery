@@ -12,11 +12,17 @@ const tokenError = (token, message) => {
 }
 const expectToken = (tokenType, token) => {
   if (token.type !== tokenType) {
-    tokenError(`expected ${tokenType}`)
+    tokenError(token, `expected ${tokenType}`)
   }
 }
 
-const executeQuery = ({cursor = rootSymbol, tokens}, env) => {
+const expectOneOfTokenTypes = (tokenTypes, token) => {
+  if (tokenTypes.indexOf(token.type) === -1) {
+    tokenError(token, `expected one of ${tokenTypes.join(', ')}`)
+  }
+}
+
+const executeQuery = ({cursor, tokens}, env) => {
   if (tokens.length === 0) {
     throw new Error('This should never happen')
   }
@@ -55,6 +61,7 @@ const executeQuery = ({cursor = rootSymbol, tokens}, env) => {
       cursor: derivedKey,
       tokens: newTail,
     } = executeQuery({
+      cursor: rootSymbol,
       tokens: tail,
     }, env)
 
@@ -70,6 +77,10 @@ const executeQuery = ({cursor = rootSymbol, tokens}, env) => {
     }, env)
 
   case Tokens.ARRAY_END:
+    expectOneOfTokenTypes([
+      Tokens.ARRAY_START, Tokens.EOF,
+      Tokens.PROP_ACCESS, Tokens.ARRAY_END,
+    ], tail[0])
     return {cursor, tokens: tail}
 
   case Tokens.EOF:
@@ -80,4 +91,8 @@ const executeQuery = ({cursor = rootSymbol, tokens}, env) => {
   }
 }
 
-export default executeQuery
+export default (tokens, env) =>
+  executeQuery({
+    cursor: rootSymbol,
+    tokens,
+  }, env)

@@ -10,10 +10,8 @@ const simpleQuery = query => {
     getFromRoot,
     getProp = defGetFn,
   }) => {
-    const {cursor, tokens: newTokens} = executeQuery(
-      {tokens},
-      {getProp, getFromRoot}
-    )
+    const {cursor, tokens: newTokens} =
+      executeQuery(tokens, {getProp, getFromRoot})
 
     // TODO: Put this in lexer/compiler land
     if (newTokens.length !== 0) {

@@ -22,7 +22,13 @@ var tokenError = function tokenError(token, message) {
 };
 var expectToken = function expectToken(tokenType, token) {
   if (token.type !== tokenType) {
-    tokenError('expected ' + tokenType);
+    tokenError(token, 'expected ' + tokenType);
+  }
+};
+
+var expectOneOfTokenTypes = function expectOneOfTokenTypes(tokenTypes, token) {
+  if (tokenTypes.indexOf(token.type) === -1) {
+    tokenError(token, 'expected one of ' + tokenTypes.join(', '));
   }
 };
 
@@ -32,9 +38,8 @@ var executeQuery = function executeQuery(_x, _x2) {
   _function: while (_again) {
     var _ref = _x,
         env = _x2;
-    _ref$cursor = cursor = tokens = getFromRoot = getProp = _tokens = token = tail = isRoot = _tail = identifier = nextTail = _executeQuery = derivedKey = newTail = undefined;
-    var _ref$cursor = _ref.cursor;
-    var cursor = _ref$cursor === undefined ? rootSymbol : _ref$cursor;
+    cursor = tokens = getFromRoot = getProp = _tokens = token = tail = isRoot = _tail = identifier = nextTail = _executeQuery = derivedKey = newTail = undefined;
+    var cursor = _ref.cursor;
     var tokens = _ref.tokens;
     _again = false;
 
@@ -84,6 +89,7 @@ var executeQuery = function executeQuery(_x, _x2) {
 
       case _TokenTypes2['default'].ARRAY_START:
         var _executeQuery = executeQuery({
+          cursor: rootSymbol,
           tokens: tail
         }, env),
             derivedKey = _executeQuery.cursor,
@@ -101,6 +107,7 @@ var executeQuery = function executeQuery(_x, _x2) {
         continue _function;
 
       case _TokenTypes2['default'].ARRAY_END:
+        expectOneOfTokenTypes([_TokenTypes2['default'].ARRAY_START, _TokenTypes2['default'].EOF, _TokenTypes2['default'].PROP_ACCESS, _TokenTypes2['default'].ARRAY_END], tail[0]);
         return { cursor: cursor, tokens: tail };
 
       case _TokenTypes2['default'].EOF:
@@ -112,5 +119,11 @@ var executeQuery = function executeQuery(_x, _x2) {
   }
 };
 
-exports['default'] = executeQuery;
+exports['default'] = function (tokens, env) {
+  return executeQuery({
+    cursor: rootSymbol,
+    tokens: tokens
+  }, env);
+};
+
 module.exports = exports['default'];

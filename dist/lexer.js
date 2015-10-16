@@ -65,7 +65,10 @@ var parseQuery = function parseQuery(_x4) {
     var column = _arguments.length <= 2 || _arguments[2] === undefined ? 1 : _arguments[2];
 
     if (query.length === 0) {
-      return tokens.concat([{ type: _TokenTypes2['default'].EOF }]);
+      return tokens.concat([{
+        type: _TokenTypes2['default'].EOF,
+        column: column
+      }]);
     }
 
     var _query = _toArray(query);
