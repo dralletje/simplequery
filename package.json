@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/dralletje/simplequery#readme",
   "devDependencies": {
-    "babel": "^5.8.23"
+    "babel": "^5.8.23",
+    "babel-eslint": "^4.1.3",
+    "eslint": "^1.6.0"
   }
 }
