@@ -33,7 +33,7 @@ const expect = value => ({
   }
 })
 
-import simpleQuery from './simplequery'
+const simpleQuery = require('./dist/simplequery')
 describe('simplequery', it => {
   it('should find single depth value', _ => {
     expect(simpleQuery('header')(store)).toBe(1)

@@ -2,9 +2,10 @@
   "name": "simplequery",
   "version": "1.0.0",
   "description": "Simple javascript like format to get values out of dictionaries",
-  "main": "simplequery.js",
+  "main": "dist/simplequery.js",
   "scripts": {
-    "test": "node test.js"
+    "build": "babel source -d dist",
+    "test": "npm run build && node test.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/dralletje/simplequery/issues"
   },
-  "homepage": "https://github.com/dralletje/simplequery#readme"
+  "homepage": "https://github.com/dralletje/simplequery#readme",
+  "devDependencies": {
+    "babel": "^5.8.23"
+  }
 }
