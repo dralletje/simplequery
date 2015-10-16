@@ -38,7 +38,10 @@ const getIdentifierToken = ({query, tokens, tokenType, column}) => {
 
 const parseQuery = (query, tokens = [], column = 1) => {
   if (query.length === 0) {
-    return tokens.concat([{type: Tokens.EOF}])
+    return tokens.concat([{
+      type: Tokens.EOF,
+      column: column,
+    }])
   }
 
   const [first, ...tail] = query
