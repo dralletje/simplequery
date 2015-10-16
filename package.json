@@ -1,6 +1,6 @@
 {
   "name": "simplequery",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple javascript like format to get values out of dictionaries",
   "main": "dist/simplequery.js",
   "scripts": {
