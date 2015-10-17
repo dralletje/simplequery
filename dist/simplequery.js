@@ -10,6 +10,10 @@ var _lexer = require('./lexer');
 
 var _lexer2 = _interopRequireDefault(_lexer);
 
+var _parser = require('./parser');
+
+var _parser2 = _interopRequireDefault(_parser);
+
 var _executor = require('./executor');
 
 var _executor2 = _interopRequireDefault(_executor);
@@ -20,6 +24,10 @@ var defGetFn = function defGetFn(dict, key) {
 
 var simpleQuery = function simpleQuery(query) {
   var tokens = (0, _lexer2['default'])(Array.from(query));
+  var err = (0, _parser2['default'])(tokens);
+  if (err !== null) {
+    throw new Error('Syntax error: ' + err.message + ' in query \'' + query + '\', character ' + err.character);
+  }
 
   return function (_ref) {
     var getFromRoot = _ref.getFromRoot;
@@ -29,13 +37,6 @@ var simpleQuery = function simpleQuery(query) {
     var _executeQuery = (0, _executor2['default'])(tokens, { getProp: getProp, getFromRoot: getFromRoot });
 
     var cursor = _executeQuery.cursor;
-    var newTokens = _executeQuery.tokens;
-
-    // TODO: Put this in lexer/compiler land
-    if (newTokens.length !== 0) {
-      console.log(newTokens);
-      throw new Error('Tokens not consumed');
-    }
 
     return cursor;
   };

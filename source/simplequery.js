@@ -1,23 +1,22 @@
-import parseQuery from './lexer'
+import lexQuery from './lexer'
+import parseQuery from './parser'
 import executeQuery from './executor'
 
 const defGetFn = (dict, key) => dict[key]
 
 const simpleQuery = query => {
-  const tokens = parseQuery(Array.from(query))
+  const tokens = lexQuery(Array.from(query))
+  const err = parseQuery(tokens)
+  if (err !== null) {
+    throw new Error(`Syntax error: ${err.message} in query '${query}', character ${err.character}`)
+  }
 
   return ({
     getFromRoot,
     getProp = defGetFn,
   }) => {
-    const {cursor, tokens: newTokens} =
+    const {cursor} =
       executeQuery(tokens, {getProp, getFromRoot})
-
-    // TODO: Put this in lexer/compiler land
-    if (newTokens.length !== 0) {
-      console.log(newTokens)
-      throw new Error('Tokens not consumed')
-    }
 
     return cursor
   }

@@ -97,7 +97,7 @@ describe('simplequery - get from store', it => {
 
   badQueries.forEach(query => {
     it(`should throw with query '${query}'`, _ => {
-      expect(() => simpleQuery(query)(store)).toThrow()
+      expect(() => simpleQuery(query)).toThrow()
     })
   })
 })
